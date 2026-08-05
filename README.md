@@ -7,16 +7,7 @@ An ML project analyzing if wins can be predicted based on momentum shifts in mat
 Can we detect momentum shifts during a tennis match, and do those momentum shifts help predict the eventual match outcome?
 
 ## Data:
-I used the data from Jeff Sackmann's match charting project.
-
-## Understanding the data:
- - 
-There are three types of files.
-1. Matches:
-  - This spreadsheet gives information about match data like match name, tournament name, player names, round number, details about the court like surface and name of the court.
-  -   
-2. Points:
-3. Stats:
+I used the data from Jeff Sackmann's match charting project. There's data for individual matches, individual points, and relevant statistics.
    
 ## Exploratory data analysis:
 
