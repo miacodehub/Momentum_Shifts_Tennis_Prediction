@@ -11,11 +11,6 @@ I used the data from Jeff Sackmann's match charting project. There's data for in
    
 ## Exploratory data analysis:
 
- 
-/// what about my data is interesting?
-/// what is my data about?
-// what am i trying to prove - do momentum shifts say anything about the winner of that game ? is there a correlation? or isnt there?
-- how to do a EDA?
 
 
 ### Section  1- Match Overview
