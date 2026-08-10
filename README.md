@@ -43,9 +43,14 @@ There needs to be a column/feature that depicts the same thing in both the point
 
 The matches table and points table are joined on match_id column. 
 
-After finding a common column, rows in both the tables have been manipulated such that every row in the match table has corresponding information in the points table. 
+After finding a common column, rows in both the tables have been manipulated such that every row in the match table has corresponding information in the points table. If there are any matches for which there are no points, those rows have been dropped from the matches table. If there are any rows in the points table for which there is no match data, those rows have been dropped from the points table.
 
-#### 
+#### Baseline numbers to keep track
+
+Baseline numbers are the numbers a model has to beat in order to conclude that momentum can help predict point outcomes. One such baseline is the probability with which a server wins a point. This represents the structural advantage servers have in scoring, so it needs to be separated from any advantage due to momentum. In the current data, servers win 64% of points. The model has to beat that baseline to show that momentum adds real predictive value beyond serve advantage alone.
+
+<img width="705" height="537" alt="image" src="https://github.com/user-attachments/assets/f9a1c4b5-432d-4481-8c8a-3ca2efc174c0" />
+
 
 ### Phase - 2: Feature Engineering:
 
