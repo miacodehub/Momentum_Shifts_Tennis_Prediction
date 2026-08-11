@@ -64,9 +64,20 @@ The purpose is to validate the data through human verification (an "eyeball test
 
 <img width="632" height="376" alt="image" src="https://github.com/user-attachments/assets/e59b1cfc-4e78-48bc-8aba-173098f89ff3" />
 
-
-
 #### Validating match shape with what a real tennis match would look like
+
+To confirm the dataset reflects real tennis rather than corrupted or mismatched data, 
+I checked the distribution of points played per match. Professional matches typically 
+run in a predictable range — roughly 100–250 points for a best-of-3 match, with longer 
+5-set matches extending further. 
+
+The initial distribution surfaced 6 matches with fewer than 40 points, well below what 
+a completed match would produce — almost certainly retirements or walkovers rather than 
+fully played matches. These were removed. After cleaning, the distribution centered 
+around a mean of 164 points per match, with a realistic spread up to ~400 points for 
+longer matches, and no remaining outliers below a plausible match length.
+
+<img width="710" height="771" alt="image" src="https://github.com/user-attachments/assets/2f771c00-f7b1-49f2-b7bd-f1d544541238" />
 
 
 ### Phase - 2: Feature Engineering:
