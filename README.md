@@ -51,6 +51,23 @@ Baseline numbers are the numbers a model has to beat in order to conclude that m
 
 <img width="705" height="537" alt="image" src="https://github.com/user-attachments/assets/f9a1c4b5-432d-4481-8c8a-3ca2efc174c0" />
 
+#### Eyeball test on a single match
+
+The purpose is to validate the data through human verification (an "eyeball test"). For this, I chose a single match and checked the following:
+
+- Created a point_in_game column that tracks how many points have been played within the current game
+- Checked that point_in_game resets to 1 every time a new game starts
+- Checked that Gm1, Gm2, Set1, Set2 update correctly once a game or set is won
+- Check that the last point number matches the sum of the final point in game of all games
+
+<img width="607" height="382" alt="image" src="https://github.com/user-attachments/assets/dd28a6d5-3f05-4984-be4f-4736e8ff740b" />
+
+<img width="632" height="376" alt="image" src="https://github.com/user-attachments/assets/e59b1cfc-4e78-48bc-8aba-173098f89ff3" />
+
+
+
+#### Validating match shape with what a real tennis match would look like
+
 
 ### Phase - 2: Feature Engineering:
 
