@@ -80,13 +80,34 @@ longer matches, and no remaining outliers below a plausible match length.
 <img width="710" height="771" alt="image" src="https://github.com/user-attachments/assets/2f771c00-f7b1-49f2-b7bd-f1d544541238" />
 
 
-### Phase - 2: Feature Engineering:
+### Feature Engineering:
+
+Going back to the question being asked, what constitutes a momentum shift in tennis?
+
+A momentum shift is defined as anything that breaks the flow of events in one way or another. Here are some examples:
+
+* A streak of winning broken by a different player
+* Server not winning the point (Servers have an advantage as they can set the pace of the game ith their serve so any time a server doesnt win a point, it's unusual and can be considered a shift in momentum.)
+* 
+
+Considering events, such as these, that signal a change in the way the game could be played out is an important characteristic of a momentum shift.
+
+So the next step is to define a few features that can be seen as shifts in momentum and see how the points at which these shifts happen and how the point is won.
+
+Feature 1 - Short term momentum:
 
 
-### Phase - 3: Model fitting:
+
+Feature 2 - Long term momentum:
 
 
-### Phase - 4: Summary and conclusion:
+
+
+
+### Model fitting:
+
+
+### Summary and conclusion:
 
 
 
