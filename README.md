@@ -21,7 +21,7 @@ There is a long existing model in tennis called the Tennis Momentum Model. This 
 
 ## ML engineering
 
-### Phase - 1: Exploratory data analysis
+### Exploratory data analysis
 
 For this project, I only used match and point data from the 2020s. 
 
@@ -88,24 +88,91 @@ A momentum shift is defined as anything that breaks the flow of events in one wa
 
 * A streak of winning broken by a different player
 * Server not winning the point (Servers have an advantage as they can set the pace of the game ith their serve so any time a server doesnt win a point, it's unusual and can be considered a shift in momentum.)
-* 
+  
 
 Considering events, such as these, that signal a change in the way the game could be played out is an important characteristic of a momentum shift.
 
 So the next step is to define a few features that can be seen as shifts in momentum and see how the points at which these shifts happen and how the point is won.
 
-Feature 1 - Short term momentum:
+Before creating features, I've changed the winning is represented.
+Instead of keeping track of which player won, I'm keeping track of the first player.
+If Player 1 won, point_p1 becomes point_p1 + 1. Else, point_p1 is point_p1 - 1;
+
+#### Feature 1 - Short term momentum (momentum_5):
+
+This feature is to get an idea of who has been winning recently. I do that by taking the last 5 points and updating point_p1 as I go.
+After the five points have been handled,  the feature momentum_5 will have a positive value, indicating that Player 1 is winning, or a negative value indicating that Player 2 is winning.
+
+Note: The current point is not being considered in these calculations.
 
 
+#### Feature 2 - Long term momentum (momentum_10):
 
-Feature 2 - Long term momentum:
+This feature is to get an idea of who has been winning in the longer term. I do that by taking the last 10 points and updating point_p1 as I go.
+After the ten points have been handled,  the feature momentum_10 will have a positive value, indicating that Player 1 is winning, or a negative value indicating that Player 2 is winning.
+
+This feature helps understand how the recent streak fares in comparison to a longer term picture.
+
+For example:
+If:
+  momentum_5 = -1.0
+  momentum_10 = -0.6
+  It means, Player 2 has been especially dominating in the recent streak
+
+if:
+  momentum_5 = 1.0
+  momentum_10 = -0.4
+  It means, Player 1 has managed to turn the tide in his favor in the recent streak.
+
+Note: The current point is not being considered in these calculations.
+
+#### Feature 3 - current streak (current_streak):
+
+This feature shows how long the current player has been winning. If a different player wins, the value resets to 0 and starts increasing in the negative direction.
+
+Just like the other two features, the variable is positive if Player 1 has been winning and negative if Player 2 has been winning.
+
+This captures something that a rolling average doesn't necessarily capture: persistence.
+
+#### Feature 4 - Game score difference (game_score_diff):
+
+This feature captures the current game advantage.
+
+It is calculated as : game_score_diff = Gm1 - Gm2
+
+If the value is :
++3 → P1 is ahead by 3 games
+ 0 → tied in games
+-2 → P2 is ahead by 2 games
+
+#### Feature 5 - Set score difference (set_score_diff):
+
+This is similar to game score difference but at the set level.
+
+If the value is :
++1 → P1 has won one more set
+ 0 → sets are tied
+-1 → P2 has won one more set
+
+This gives the model larger-scale match context.
+
+For example, momentum_5 = +1 doesn't indicate Player 1 is winning if Player 2 is ahead by 2 sets.
 
 
+### Handling missing values:
 
+The first few matches won't have enough information to calculate momentum and its features. 
+Therefore, these values are removed from the data.
 
+### Modeling:
 
-### Model fitting:
+### Evaluation:
 
+### Momentum Shift Analysis:
+
+### Results and findings:
+
+### Limitations:
 
 ### Summary and conclusion:
 
