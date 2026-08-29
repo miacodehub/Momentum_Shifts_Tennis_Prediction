@@ -204,6 +204,16 @@ The following are the values I observed:
 Accuracy : 60.93%
 ROC-AUC : 0.649
 
+#### Momentum shift feature:
+
+Until now, I've focused on building features that understand momentum and then predict the winner based on that understanding.
+But the broader question is about momentum _shifts_ more than just momentum. 
+
+The full model achieved 60.93% accuracy and an ROC-AUC of 0.649, indicating that the engineered momentum and contextual features contain meaningful predictive information about game outcomes
+
+However, momentum shift is a bit different. It is used to indicate what might not be obvious - who's in the lead and what just happened that may indicate that the winner probably be the one in lead.
+
+
 ### Observations:
 
 
