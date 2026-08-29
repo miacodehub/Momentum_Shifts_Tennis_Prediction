@@ -161,10 +161,52 @@ For example, momentum_5 = +1 doesn't indicate Player 1 is winning if Player 2 is
 
 ### Handling missing values:
 
-The first few matches won't have enough information to calculate momentum and its features. 
+The first few matches won't have enough information to calculate momentum_5 and momentum_10. 
 Therefore, these values are removed from the data.
 
+### Contextual Information:
+
+The features 'Game Score Difference' and 'Set Score difference'are useful as contextual features.
+These features show the condition of the games and the sets at the time of tracking this point.
+
 ### Modeling:
+
+####  Defining the Target:
+The target in this model is the game winner as I'm modeling to see if I can predict the game winner.
+
+game_winner = 1 → P1 eventually wins this game
+game_winner = 0 → P2 eventually wins this game
+
+#### Splitting the data:
+I used a 80/20 rule for train/test split. So 80% of match points are used to train the model and 20% are used to test it.
+
+#### Context-only Model:
+Here, I built the model only using context a.k.a. using features game_score_diff and set_score_diff.
+The following are the values I observed:
+
+Accuracy : 56.53%
+ROC-AUC : 0.541
+
+#### Momentum-only Model:
+Here, I built the model only using momentum features a.k.a. using features momentum_5, momentum_10, and current_streak.
+The following are the values I observed:
+
+Accuracy : 60.49%
+ROC-AUC : 0.643
+
+Compared with the context-only model, that's a pretty substantial jump.
+Therefore, it can be concluded that the momentum model contains significantly more predictive information than a context-only model.
+
+#### Full Model:
+Here, I built the model with all 5 features.
+The following are the values I observed:
+
+Accuracy : 60.93%
+ROC-AUC : 0.649
+
+### Observations:
+
+
 
 ### Evaluation:
 
