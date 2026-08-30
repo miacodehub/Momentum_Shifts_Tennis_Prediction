@@ -5,27 +5,15 @@ An ML project analyzing if wins can be predicted based on momentum shifts in mat
 
 ## Problem statement:
 Can we detect momentum shifts during a tennis match, and do those momentum shifts help predict the eventual match outcome?
+
+## Data Source:
 I used the data from Jeff Sackmann's match charting project. There's data for individual matches, individual points, and relevant statistics.
+For this project, I only used match and point data from the 2020s.
 
-## Tennis Theory:
+## Exploratory Data Analysis
 
-### Tennis Terms:
-
-- Break point: Returner (the player returning the serve) is 1 point from winning the game
-- Trailing a set: 
-
-### Tennis Momentum Model:
-There is a long existing model in tennis called the Tennis Momentum Model. This model's goal is to explore how momentum and shifts in momentum affect player performance and eventually player match outcomes. 
-
-
-
-## ML engineering
-
-### Exploratory data analysis
-
-For this project, I only used match and point data from the 2020s. 
-
-#### Checking completeness of data:
+ 
+### Checking completeness of data:
 
 The matches and points data has been checked for completeness and a final set(unique rows) of useful data has been prepared. The following are the details of this data:
 Total matches: 3345
@@ -37,7 +25,7 @@ The spread of matches over the years looks as follows:
 
 The distribution of matches will be lumpy as more data is charted for Grand Slams and famous players, less for smaller tournaments. 
 
-#### Checking if the tables are joined correctly 
+### Checking if the tables are joined correctly 
 
 There needs to be a column/feature that depicts the same thing in both the points and matches table. Only then, can it be said that the tables are joined correctly.
 
@@ -45,13 +33,13 @@ The matches table and points table are joined on match_id column.
 
 After finding a common column, rows in both the tables have been manipulated such that every row in the match table has corresponding information in the points table. If there are any matches for which there are no points, those rows have been dropped from the matches table. If there are any rows in the points table for which there is no match data, those rows have been dropped from the points table.
 
-#### Baseline numbers to keep track
+### Baseline numbers to keep track
 
 Baseline numbers are the numbers a model has to beat in order to conclude that momentum can help predict point outcomes. One such baseline is the probability with which a server wins a point. This represents the structural advantage servers have in scoring, so it needs to be separated from any advantage due to momentum. In the current data, servers win 64% of points. The model has to beat that baseline to show that momentum adds real predictive value beyond serve advantage alone.
 
 <img width="705" height="537" alt="image" src="https://github.com/user-attachments/assets/f9a1c4b5-432d-4481-8c8a-3ca2efc174c0" />
 
-#### Eyeball test on a single match
+### Eyeball test on a single match
 
 The purpose is to validate the data through human verification (an "eyeball test"). For this, I chose a single match and checked the following:
 
@@ -64,7 +52,7 @@ The purpose is to validate the data through human verification (an "eyeball test
 
 <img width="632" height="376" alt="image" src="https://github.com/user-attachments/assets/e59b1cfc-4e78-48bc-8aba-173098f89ff3" />
 
-#### Validating match shape with what a real tennis match would look like
+### Validating match shape with what a real tennis match would look like
 
 To confirm the dataset reflects real tennis rather than corrupted or mismatched data, 
 I checked the distribution of points played per match. Professional matches typically 
@@ -80,7 +68,7 @@ longer matches, and no remaining outliers below a plausible match length.
 <img width="710" height="771" alt="image" src="https://github.com/user-attachments/assets/2f771c00-f7b1-49f2-b7bd-f1d544541238" />
 
 
-### Feature Engineering:
+## Feature Engineering:
 
 Going back to the question being asked, what constitutes a momentum shift in tennis?
 
@@ -98,7 +86,7 @@ Before creating features, I've changed the winning is represented.
 Instead of keeping track of which player won, I'm keeping track of the first player.
 If Player 1 won, point_p1 becomes point_p1 + 1. Else, point_p1 is point_p1 - 1;
 
-#### Feature 1 - Short term momentum (momentum_5):
+### Feature 1 - Short term momentum (momentum_5):
 
 This feature is to get an idea of who has been winning recently. I do that by taking the last 5 points and updating point_p1 as I go.
 After the five points have been handled,  the feature momentum_5 will have a positive value, indicating that Player 1 is winning, or a negative value indicating that Player 2 is winning.
@@ -106,7 +94,7 @@ After the five points have been handled,  the feature momentum_5 will have a pos
 Note: The current point is not being considered in these calculations.
 
 
-#### Feature 2 - Long term momentum (momentum_10):
+### Feature 2 - Long term momentum (momentum_10):
 
 This feature is to get an idea of who has been winning in the longer term. I do that by taking the last 10 points and updating point_p1 as I go.
 After the ten points have been handled,  the feature momentum_10 will have a positive value, indicating that Player 1 is winning, or a negative value indicating that Player 2 is winning.
@@ -126,7 +114,7 @@ if:
 
 Note: The current point is not being considered in these calculations.
 
-#### Feature 3 - current streak (current_streak):
+### Feature 3 - current streak (current_streak):
 
 This feature shows how long the current player has been winning. If a different player wins, the value resets to 0 and starts increasing in the negative direction.
 
@@ -134,7 +122,7 @@ Just like the other two features, the variable is positive if Player 1 has been 
 
 This captures something that a rolling average doesn't necessarily capture: persistence.
 
-#### Feature 4 - Game score difference (game_score_diff):
+### Feature 4 - Game score difference (game_score_diff):
 
 This feature captures the current game advantage.
 
@@ -145,7 +133,7 @@ If the value is :
  0 → tied in games
 -2 → P2 is ahead by 2 games
 
-#### Feature 5 - Set score difference (set_score_diff):
+### Feature 5 - Set score difference (set_score_diff):
 
 This is similar to game score difference but at the set level.
 
@@ -158,6 +146,21 @@ This gives the model larger-scale match context.
 
 For example, momentum_5 = +1 doesn't indicate Player 1 is winning if Player 2 is ahead by 2 sets.
 
+### Momentum Shift Feature 1 - momentum delta:
+
+Momentum_delta = momentum_5 - momentum_10
+
+This measures how much the recent momentum differs from the longer momentum.
+A large positive difference means momentum has shifted towards Player 1.
+A large negative difference means momentum has shifted towards Player 2.
+A small difference or near 0 difference means there wasn't much of a shift in momentum.
+
+This is a continuous shift signal.
+
+### Momentum Shift Feature 2 - sign flip:
+
+This flags when short term and long term momentum point in opposite directions.
+This is a binary shift signal.
 
 ### Handling missing values:
 
@@ -169,7 +172,9 @@ Therefore, these values are removed from the data.
 The features 'Game Score Difference' and 'Set Score difference'are useful as contextual features.
 These features show the condition of the games and the sets at the time of tracking this point.
 
-### Modeling:
+## Modeling:
+
+### Logistic Regression Model
 
 ####  Defining the Target:
 The target in this model is the game winner as I'm modeling to see if I can predict the game winner.
@@ -214,19 +219,36 @@ The full model achieved 60.93% accuracy and an ROC-AUC of 0.649, indicating that
 However, momentum shift is a bit different. It is used to indicate what might not be obvious - who's in the lead and what just happened that may indicate that the winner probably be the one in lead.
 
 
+
+| Model                      |   Accuracy |   ROC-AUC |
+| -------------------------- | ---------: | --------: |
+| Context-only               |     56.53% |     0.541 |
+| Momentum-only              |     60.49% |     0.643 |
+| Full                       |     60.93% |     0.649 |
+| **Full + momentum shifts** | **61.29%** | **0.655** |
+
+
+So adding momentum_delta + sign_flip improved:
+
+Accuracy: +0.36 percentage points
+ROC-AUC: +0.0061
+
+### XG Model:
+
+
+
 ### Observations:
 
 
 
-### Evaluation:
+## Evaluation:
 
-### Momentum Shift Analysis:
 
-### Results and findings:
+## Results and findings:
 
-### Limitations:
+## Limitations:
 
-### Summary and conclusion:
+## Summary and conclusion:
 
 
 
