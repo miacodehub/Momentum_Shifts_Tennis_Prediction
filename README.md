@@ -1,4 +1,4 @@
-# Predicting Winner in Tennis based on Momentum
+# Momentum Shifts in Tennis and Predicting Winners
 An ML project analyzing if wins can be predicted based on momentum shifts in matches.
 
 
