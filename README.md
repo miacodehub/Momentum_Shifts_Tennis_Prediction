@@ -75,14 +75,14 @@ Going back to the question being asked, what constitutes a momentum shift in ten
 A momentum shift is defined as anything that breaks the flow of events in one way or another. Here are some examples:
 
 * A streak of winning broken by a different player
-* Server not winning the point (Servers have an advantage as they can set the pace of the game ith their serve so any time a server doesnt win a point, it's unusual and can be considered a shift in momentum.)
+* Server not winning the point (Servers have an advantage as they can set the pace of the game with their serve so any time a server doesn't win a point, it's unusual and can be considered a shift in momentum.)
   
 
 Considering events, such as these, that signal a change in the way the game could be played out is an important characteristic of a momentum shift.
 
 So the next step is to define a few features that can be seen as shifts in momentum and see how the points at which these shifts happen and how the point is won.
 
-Before creating features, I've changed the winning is represented.
+Before creating features, I've changed how the winning is represented.
 Instead of keeping track of which player won, I'm keeping track of the first player.
 If Player 1 won, point_p1 becomes point_p1 + 1. Else, point_p1 is point_p1 - 1;
 
