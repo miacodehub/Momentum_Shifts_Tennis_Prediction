@@ -235,21 +235,138 @@ ROC-AUC: +0.0061
 
 ### XG Model:
 
+Logistic Regression assumes a relatively simple relationship between the features and the outcome. Since the relationship between momentum, game context, and the eventual game winner may be more complex, I also tested an XGBoost model.
 
+XGBoost (Extreme Gradient Boosting) is a tree-based model that can capture non-linear relationships and interactions between features.
 
-### Observations:
+#### Momentum-only XGBoost:
+
+I first trained XGBoost using only the three momentum features:
+
+* momentum_5
+* momentum_10
+* current_streak
+
+The following are the values I observed:
+
+Accuracy : 66.04%
+ROC-AUC : 0.713
+Log Loss : 0.622
+
+This performed substantially better than the Logistic Regression momentum-only model, which achieved 60.49% accuracy and an ROC-AUC of 0.643.
+
+#### Full XGBoost Model:
+
+I then trained XGBoost using all five features:
+
+* momentum_5
+* momentum_10
+* current_streak
+* game_score_diff
+* set_score_diff
+
+The following are the values I observed:
+
+Accuracy : 69.16%
+ROC-AUC : 0.756
+Log Loss : 0.588
+
+Adding the game and set context improved the model compared with the momentum-only XGBoost model.
+
+#### XGBoost with Momentum Shifts:
+
+Finally, I added the two explicitly engineered momentum shift features:
+
+* momentum_delta
+* sign_flip
+
+The following are the values I observed:
+
+Accuracy : 68.97%
+ROC-AUC : 0.755
+Log Loss : 0.589
+
+The addition of the momentum shift features did not improve the XGBoost model. The full XGBoost model without these features performed slightly better.
+
+## Observations:
+
+The XGBoost models performed substantially better than the Logistic Regression models.
+
+The momentum-only XGBoost model achieved an ROC-AUC of 0.713, showing that the momentum features contain meaningful predictive information on their own.
+
+Adding game and set context improved the ROC-AUC further to 0.756 and increased accuracy to 69.16%.
+
+Interestingly, explicitly adding `momentum_delta` and `sign_flip` did not improve the XGBoost model. This suggests that XGBoost may already be able to capture the useful relationships between the underlying momentum features without requiring these additional shift features.
 
 
 
 ## Evaluation:
 
+I evaluated the models using three metrics: Accuracy, ROC-AUC, and Log Loss.
+
+**Accuracy** measures the percentage of game outcomes that the model predicted correctly.
+
+**ROC-AUC (Receiver Operating Characteristic – Area Under the Curve)** measures how well the model separates games eventually won by Player 1 from games eventually won by Player 2. An AUC of 0.5 represents random classification, while a value closer to 1 indicates better separation.
+
+**Log Loss** evaluates the quality of the predicted probabilities. Lower values indicate better-calibrated predictions, while confident incorrect predictions are penalized more heavily.
+
+The final model results were:
+
+| Model                             |   Accuracy |   ROC-AUC |  Log Loss |
+| --------------------------------- | ---------: | --------: | --------: |
+| Context-only                      |     56.53% |     0.541 |         — |
+| Logistic - Momentum               |     60.49% |     0.643 |         — |
+| Logistic - Full                   |     60.93% |     0.649 |         — |
+| Logistic - Full + Momentum Shifts |     61.29% |     0.655 |         — |
+| XGBoost - Momentum                |     66.04% |     0.713 |     0.622 |
+| **XGBoost - Full**                | **69.16%** | **0.756** | **0.588** |
+| XGBoost - Full + Momentum Shifts  |     68.97% |     0.755 |     0.589 |
+
+The XGBoost Full model produced the strongest overall results, achieving 69.16% accuracy and an ROC-AUC of 0.756.
 
 ## Results and findings:
 
+The results show that point-level momentum contains meaningful predictive information about the eventual winner of the current game.
+
+The momentum-only Logistic Regression model improved from the context-only baseline of 56.53% accuracy and 0.541 ROC-AUC to 60.49% accuracy and 0.643 ROC-AUC.
+
+Using XGBoost produced a much larger improvement. The momentum-only XGBoost model achieved 66.04% accuracy and 0.713 ROC-AUC.
+
+Adding game and set context further improved the XGBoost model to 69.16% accuracy and 0.756 ROC-AUC, making it the best-performing model in the experiment.
+
+The explicitly engineered momentum shift features (`momentum_delta` and `sign_flip`) produced a small improvement when added to Logistic Regression, increasing accuracy from 60.93% to 61.29% and ROC-AUC from 0.649 to 0.655.
+
+However, these features did not improve XGBoost. The XGBoost model with the shift features achieved 68.97% accuracy and 0.755 ROC-AUC, compared with 69.16% accuracy and 0.756 ROC-AUC for the full model without them.
+
+This suggests that while momentum shifts can provide some additional information to a simpler linear model, XGBoost is already able to capture useful relationships between the underlying momentum features.
+
 ## Limitations:
+
+* **Momentum is an engineered concept:** Momentum is not directly observable in the data. The features used in this project are proxies based on recent point-winning patterns and therefore represent one possible definition of momentum.
+
+* **Game-level target:** The model predicts the eventual winner of the current game, rather than the winner of the entire match.
+
+* **Repeated observations within games:** Multiple point-level observations from the same game have the same eventual game winner as the target. Although the train/test split was performed at the match level to prevent points from the same match appearing in both sets, the individual point observations are not completely independent.
+
+* **Serve advantage:** Serving provides a structural advantage in tennis. The dataset showed that servers won approximately 64% of points. The models focus on momentum and score context rather than explicitly modeling every aspect of serve-related advantage.
+
+* **Data coverage:** The Match Charting Project does not contain an equally distributed sample of all professional tennis matches. Some tournaments and players are represented more heavily than others.
+
+* **Predictive, not causal:** A relationship between momentum features and game outcomes does not establish that momentum itself causes a player to win.
+
+* **Model generalization:** The models were evaluated using a match-level train/test split rather than a chronological split. Therefore, the results do not directly measure how well the model would perform when predicting games from completely future tournaments or seasons.
 
 ## Summary and conclusion:
 
+This project explored whether point-level momentum patterns and momentum shifts can help predict the eventual winner of a tennis game.
+
+The results indicate that momentum contains meaningful predictive information. Both Logistic Regression and XGBoost performed better when momentum features were included, with XGBoost achieving the strongest performance.
+
+The best model was the **XGBoost Full model**, which achieved **69.16% accuracy, 0.756 ROC-AUC, and 0.588 Log Loss** using momentum and game/set context.
+
+Explicit momentum-shift features provided a small improvement for Logistic Regression but did not improve XGBoost. This suggests that the underlying momentum features contain useful information, while explicitly encoding the shift may not add much once a nonlinear model is able to learn interactions between the features.
+
+Overall, the project provides evidence that recent point-level patterns can be useful for predicting the eventual winner of the current tennis game, while also showing that the way momentum is represented and modeled has a significant impact on predictive performance.
 
 
 
